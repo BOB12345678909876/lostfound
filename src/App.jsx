@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react'
-import { supabase, getUserId, photoPathFromUrl } from './supabase'
+import { supabase, getUserId } from './supabase'
+import { timeAgo } from './time'
 import PostItemForm from './PostItemForm'
+import ItemDetail from './ItemDetail'
+import logo from './assets/logo.png'
 import './App.css'
 
-function timeAgo(dateString) {
-  const days = Math.floor((Date.now() - new Date(dateString)) / 86400000)
-  if (days === 0) return 'today'
-  if (days === 1) return 'yesterday'
-  return `${days} days ago`
+function useHash() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => {
+    function onChange() {
+      setHash(window.location.hash)
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onChange)
+    return () => window.removeEventListener('hashchange', onChange)
+  }, [])
+  return hash
 }
 
 function App() {
@@ -17,7 +26,10 @@ function App() {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false)
-  const [editingId, setEditingId] = useState(null)
+  const hash = useHash()
+
+  const match = hash.match(/^#\/item\/(\d+)$/)
+  const openItemId = match ? Number(match[1]) : null
 
   function loadItems() {
     return supabase
@@ -39,25 +51,6 @@ function App() {
     loadItems()
   }, [])
 
-  async function markReturned(item) {
-    const { error } = await supabase.from('items').update({ claimed: true }).eq('id', item.id)
-    if (error) alert('Could not update: ' + error.message)
-    else loadItems()
-  }
-
-  async function deleteItem(item) {
-    if (!confirm(`Delete "${item.title}"? This can't be undone.`)) return
-    const { error } = await supabase.from('items').delete().eq('id', item.id)
-    if (error) {
-      alert('Could not delete: ' + error.message)
-      return
-    }
-    if (item.photo_url) {
-      await supabase.storage.from('photos').remove([photoPathFromUrl(item.photo_url)])
-    }
-    loadItems()
-  }
-
   const query = search.trim().toLowerCase()
   const visibleItems = items.filter((item) =>
     [item.title, item.description, item.location_found]
@@ -66,86 +59,102 @@ function App() {
       .includes(query),
   )
 
+  function renderDetail() {
+    const list = visibleItems.some((i) => i.id === openItemId) ? visibleItems : items
+    const index = list.findIndex((i) => i.id === openItemId)
+    if (index === -1) {
+      return (
+        <div className="detail">
+          <a href="#/" className="back-button">← Back to all items</a>
+          <p className="note">This item isn't available anymore. It may have been returned or deleted.</p>
+        </div>
+      )
+    }
+    const item = list[index]
+    return (
+      <ItemDetail
+        key={item.id}
+        item={item}
+        position={index + 1}
+        total={list.length}
+        prevId={list[index - 1]?.id}
+        nextId={list[index + 1]?.id}
+        isOwner={Boolean(userId) && item.user_id === userId}
+        onChanged={loadItems}
+      />
+    )
+  }
+
   return (
     <div className="page">
       <header className="header">
-        <h1>Lost &amp; Found</h1>
-        <button className="primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Close' : '+ I found something'}
-        </button>
+        <a href="#/" className="brand" aria-label="Back to all items">
+          <img src={logo} alt="" className="logo" />
+          <h1>Canyon Crest Academy Lost and Found</h1>
+        </a>
+        {openItemId === null && (
+          <button className="primary" onClick={() => setShowForm(!showForm)}>
+            {showForm ? 'Close' : 'Add an item'}
+          </button>
+        )}
       </header>
 
-      {showForm && (
-        <PostItemForm
-          onSaved={() => {
-            setShowForm(false)
-            loadItems()
-          }}
-        />
-      )}
-
-      <input
-        className="search"
-        type="search"
-        placeholder="Search for your lost item (e.g. water bottle, hoodie, AirPods)"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      {loading && <p className="note">Loading items…</p>}
       {error && <p className="error">{error}</p>}
-      {!loading && !error && visibleItems.length === 0 && (
-        <p className="note">
-          {items.length === 0 ? 'Nothing has been posted yet.' : 'No items match your search.'}
-        </p>
-      )}
 
-      <div className="grid">
-        {visibleItems.map((item) =>
-          editingId === item.id ? (
+      {loading ? (
+        <p className="note">Loading items…</p>
+      ) : openItemId !== null ? (
+        renderDetail()
+      ) : (
+        <>
+          {showForm && (
             <PostItemForm
-              key={item.id}
-              item={item}
               onSaved={() => {
-                setEditingId(null)
+                setShowForm(false)
                 loadItems()
               }}
-              onCancel={() => setEditingId(null)}
             />
-          ) : (
-            <article key={item.id} className="card">
-              {item.photo_url && <img src={item.photo_url} alt={item.title} />}
-              <div className="card-body">
-                <h2>{item.title}</h2>
-                {item.description && <p>{item.description}</p>}
-                <dl>
-                  {item.location_found && (
-                    <>
-                      <dt>Found at</dt>
-                      <dd>{item.location_found}</dd>
-                    </>
-                  )}
-                  {item.contact && (
-                    <>
-                      <dt>Get it back</dt>
-                      <dd>{item.contact}</dd>
-                    </>
-                  )}
-                  <dt>Posted</dt>
-                  <dd>{timeAgo(item.created_at)}</dd>
-                </dl>
-                {userId && item.user_id === userId && (
-                  <div className="actions">
-                    <button className="secondary" onClick={() => setEditingId(item.id)}>Edit</button>
-                    <button className="secondary" onClick={() => markReturned(item)}>Returned</button>
-                    <button className="danger" onClick={() => deleteItem(item)}>Delete</button>
-                  </div>
-                )}
-              </div>
-            </article>
-          ),
-        )}
-      </div>
+          )}
+
+          <input
+            className="search"
+            type="search"
+            placeholder="Search for your lost item (e.g. water bottle, hoodie, AirPods)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          {!error && visibleItems.length === 0 && (
+            <p className="note">
+              {items.length === 0 ? 'Nothing has been posted yet.' : 'No items match your search.'}
+            </p>
+          )}
+
+          <div className="grid">
+            {visibleItems.map((item) => (
+              <a key={item.id} href={`#/item/${item.id}`} className="card">
+                <div className="card-photo">
+                  {item.photo_url && <img src={item.photo_url} alt={item.title} />}
+                </div>
+                <div className="card-body">
+                  <h2>{item.title}</h2>
+                  {item.description && <p>{item.description}</p>}
+                  <dl>
+                    {item.location_found && (
+                      <>
+                        <dt>Found at</dt>
+                        <dd>{item.location_found}</dd>
+                      </>
+                    )}
+                    <dt>Posted</dt>
+                    <dd>{timeAgo(item.created_at)}</dd>
+                  </dl>
+                </div>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

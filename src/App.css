@@ -1,7 +1,7 @@
 .page {
-  max-width: 1000px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 24px 16px 64px;
+  padding: 32px 24px 64px;
 }
 
 .header {
@@ -10,34 +10,106 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.header h1 {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brand h1 {
   margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  transition: color 0.2s;
+}
+
+.brand:hover h1 {
+  color: var(--accent);
+}
+
+.logo {
+  height: 52px;
+  width: auto;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.brand:hover .logo {
+  transform: rotate(-4deg) scale(1.06);
+}
+
+@media (max-width: 700px) {
+  .brand h1 {
+    font-size: 21px;
+  }
+  .logo {
+    height: 40px;
+  }
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 button.primary {
-  font: inherit;
   font-weight: 600;
-  padding: 10px 18px;
+  font-size: 16px;
+  padding: 12px 22px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--accent);
   color: #fff;
-  cursor: pointer;
+  box-shadow: 0 2px 8px var(--accent-bg);
+}
+
+button.primary:hover:not(:disabled) {
+  filter: brightness(1.12);
+  box-shadow: 0 6px 18px var(--accent-border);
+  transform: translateY(-1px);
 }
 
 button.secondary,
 button.danger {
-  font: inherit;
   font-size: 14px;
-  padding: 6px 12px;
+  font-weight: 500;
+  padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-h);
-  cursor: pointer;
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
 button.danger {
@@ -45,25 +117,17 @@ button.danger {
   border-color: #e5484d66;
 }
 
+button.danger:hover:not(:disabled) {
+  background: #e5484d;
+  border-color: #e5484d;
+  color: #fff;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
-}
-
-.hint {
-  font-size: 14px;
-  margin-top: -8px;
-}
-
-.grid .post-form {
-  margin-bottom: 0;
-}
-
-button.primary:disabled {
-  opacity: 0.6;
-  cursor: wait;
+  margin-top: 14px;
 }
 
 .search,
@@ -72,25 +136,35 @@ button.primary:disabled {
   font: inherit;
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
+  border-radius: 10px;
+  background: var(--input-bg);
   color: var(--text-h);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.search:focus,
+.post-form input:focus,
+.post-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
 .search {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .post-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 20px;
-  margin-bottom: 24px;
+  padding: 24px;
+  margin-bottom: 28px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  background: var(--card);
 }
 
 .post-form label {
@@ -102,79 +176,278 @@ button.primary:disabled {
 }
 
 .post-form textarea {
-  min-height: 70px;
+  min-height: 80px;
   resize: vertical;
 }
 
 .photo-picker {
   align-items: center;
   justify-content: center;
-  min-height: 160px;
+  min-height: 180px;
   border: 2px dashed var(--border);
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.photo-picker:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
 }
 
 .photo-picker img {
-  max-height: 260px;
+  max-height: 280px;
   max-width: 100%;
   object-fit: contain;
 }
 
+.hint {
+  font-size: 14px;
+  margin-top: -8px;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+}
+
+.grid .post-form {
+  margin-bottom: 0;
 }
 
 .card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  background: var(--card);
   overflow: hidden;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
-.card img {
-  width: 100%;
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #3a3a3a;
+  box-shadow:
+    0 20px 40px -14px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.card-photo {
+  overflow: hidden;
   aspect-ratio: 4 / 3;
+  background: #222;
+}
+
+.card-photo img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-photo img {
+  transform: scale(1.05);
+}
+
+.card h2 {
+  transition: color 0.2s;
+}
+
+.card:hover h2 {
+  color: var(--accent);
 }
 
 .card-body {
-  padding: 12px 14px;
+  padding: 16px 18px 18px;
 }
 
 .card-body h2 {
-  font-size: 18px;
+  font-size: 21px;
   margin: 0 0 6px;
 }
 
 .card-body p {
-  font-size: 15px;
-  margin-bottom: 8px;
+  font-size: 16px;
+  margin-bottom: 12px;
 }
 
 .card dl {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 2px 10px;
+  gap: 4px 12px;
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .card dt {
   color: var(--text);
+  white-space: nowrap;
 }
 
 .card dd {
   margin: 0;
   color: var(--text-h);
+  overflow-wrap: anywhere;
 }
 
 .note {
   text-align: center;
   margin: 32px 0;
+}
+
+.muted {
+  color: var(--text);
+}
+
+.back-button,
+.pager-button {
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text-h);
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.back-button:hover,
+.pager-button:not(.disabled):hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: #fff;
+}
+
+.pager-button.disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.back-button {
+  align-self: flex-start;
+}
+
+.detail-card {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.detail-photo {
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.detail-photo img {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+}
+
+.detail-info {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-info h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.detail-description {
+  font-size: 18px;
+  color: var(--text-h);
+  margin-bottom: 24px;
+}
+
+.detail-info dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-info dt {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  margin-top: 16px;
+}
+
+.detail-info dd {
+  margin: 4px 0 0;
+  font-size: 18px;
+  color: var(--text-h);
+  overflow-wrap: anywhere;
+}
+
+.detail-info .actions {
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+.pager {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.pager-count {
+  font-size: 14px;
+  margin-right: 6px;
+}
+
+@media (max-width: 800px) {
+  .detail-card {
+    grid-template-columns: 1fr;
+  }
+  .detail-photo {
+    min-height: 0;
+  }
+  .detail-info {
+    padding: 22px;
+  }
+  .detail-info h2 {
+    font-size: 26px;
+  }
 }
 
 .error {
