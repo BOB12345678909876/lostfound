@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { supabase, photoPathFromUrl } from './supabase'
+import TagPicker from './TagPicker'
 
 const MAX_PHOTO_MB = 5
 
-function PostItemForm({ item, onSaved, onCancel }) {
+function PostItemForm({ item, tagSuggestions, onSaved, onCancel }) {
   const editing = Boolean(item)
   const [photo, setPhoto] = useState(null)
   const [preview, setPreview] = useState(item?.photo_url ?? '')
@@ -11,6 +12,7 @@ function PostItemForm({ item, onSaved, onCancel }) {
   const [description, setDescription] = useState(item?.description ?? '')
   const [location, setLocation] = useState(item?.location_found ?? '')
   const [contact, setContact] = useState(item?.contact ?? '')
+  const [tag, setTag] = useState(item?.tag ?? '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -57,6 +59,7 @@ function PostItemForm({ item, onSaved, onCancel }) {
       description: description.trim(),
       location_found: location.trim(),
       contact: contact.trim(),
+      tag: tag.trim(),
       photo_url: photoUrl,
     }
     const result = editing
@@ -92,6 +95,11 @@ function PostItemForm({ item, onSaved, onCancel }) {
         What is it? *
         <input required maxLength={80} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Blue Hydro Flask" />
       </label>
+
+      <div className="field">
+        <span>Tag *</span>
+        <TagPicker value={tag} onChange={setTag} suggestions={tagSuggestions} required />
+      </div>
 
       <label>
         Description

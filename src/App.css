@@ -453,3 +453,363 @@ button.danger:hover:not(:disabled) {
 .error {
   color: #e5484d;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+.username {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+button.github-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #24292f;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.github-button:hover {
+  background: #32383f;
+}
+
+/* ---------- Tags ---------- */
+
+.post-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.tag-picker {
+  position: relative;
+}
+
+.tag-input-wrap {
+  position: relative;
+}
+
+.post-form .tag-input-wrap input {
+  padding-right: 48px;
+}
+
+.tag-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.tag-toggle:hover {
+  color: var(--text-h);
+}
+
+.tag-toggle svg {
+  transition: transform 0.2s;
+}
+
+.tag-toggle svg.flip {
+  transform: rotate(180deg);
+}
+
+.tag-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  animation: pop 0.14s ease-out;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.tag-list li {
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.tag-list li:hover,
+.tag-list li.active {
+  background: var(--accent-bg);
+  color: #fff;
+}
+
+.tag-pill {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: #ff8a8a;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.tag-filters {
+  display: flex;
+  gap: 8px;
+  margin: -12px 0 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tag-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-h);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--accent-border);
+}
+
+.chip.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ---------- Mobile ---------- */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS zooms into any input under 16px, so keep them at 16 */
+.search,
+.post-form input,
+.post-form textarea {
+  font-size: 16px;
+}
+
+/* Hover lift effects stick after a tap on touch screens */
+@media (hover: none) {
+  .card:hover,
+  .card:hover .card-photo img,
+  button.primary:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+      calc(40px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+
+  .header {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .brand {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .brand h1 {
+    font-size: 19px;
+  }
+
+  .logo {
+    height: 36px;
+  }
+
+  .header-actions {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .header-actions > button.primary {
+    flex: 1;
+    padding: 12px 16px;
+  }
+
+  button.github-button {
+    flex: 1;
+    justify-content: center;
+    padding: 12px 14px;
+  }
+
+  .account {
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 30vw;
+    font-size: 14px;
+  }
+
+  button.secondary,
+  button.danger {
+    min-height: 44px;
+  }
+
+  .search {
+    margin-bottom: 20px;
+  }
+
+  .tag-filters {
+    margin: -8px -16px 18px;
+    padding: 0 16px;
+  }
+
+  .post-form {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .post-form .actions button {
+    flex: 1;
+  }
+
+  /* Two compact columns of cards */
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    border-radius: 12px;
+  }
+
+  .card-photo {
+    aspect-ratio: 1;
+  }
+
+  .card-body {
+    padding: 10px 10px 12px;
+  }
+
+  .card-body h2 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .card-body p {
+    display: none;
+  }
+
+  .card .tag-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    margin-bottom: 6px;
+  }
+
+  .card dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+    font-size: 13px;
+  }
+
+  .card dt {
+    display: none;
+  }
+
+  .card dd:last-child {
+    color: var(--text);
+  }
+
+  .detail {
+    gap: 14px;
+  }
+
+  .detail-photo img {
+    max-height: 55vh;
+  }
+
+  .detail-info {
+    padding: 18px;
+  }
+
+  .detail-info h2 {
+    font-size: 24px;
+  }
+
+  .detail-info .actions button {
+    flex: 1 1 auto;
+  }
+
+  .pager {
+    flex-wrap: wrap;
+  }
+
+  .pager-count {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+  }
+
+  .pager-button {
+    flex: 1;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,17 @@
+export const DEFAULT_TAGS = [
+  'Water bottle',
+  'Clothing',
+  'Electronics',
+  'Headphones',
+  'Bag',
+  'Keys',
+  'ID / Cards',
+  'Wallet',
+  'Books & Supplies',
+  'Calculator',
+  'Glasses',
+  'Jewelry',
+  'Sports gear',
+  'Lunchbox',
+  'Other',
+]

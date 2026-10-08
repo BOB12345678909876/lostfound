@@ -7,7 +7,7 @@ function goHome() {
   window.location.hash = '#/'
 }
 
-function ItemDetail({ item, position, total, prevId, nextId, isOwner, onChanged }) {
+function ItemDetail({ item, tagSuggestions, position, total, prevId, nextId, isOwner, onChanged }) {
   const [editing, setEditing] = useState(false)
 
   async function markReturned() {
@@ -41,6 +41,7 @@ function ItemDetail({ item, position, total, prevId, nextId, isOwner, onChanged 
       {editing ? (
         <PostItemForm
           item={item}
+          tagSuggestions={tagSuggestions}
           onSaved={() => {
             setEditing(false)
             onChanged()
@@ -53,6 +54,7 @@ function ItemDetail({ item, position, total, prevId, nextId, isOwner, onChanged 
             {item.photo_url && <img src={item.photo_url} alt={item.title} />}
           </div>
           <div className="detail-info">
+            {item.tag && <span className="tag-pill">{item.tag}</span>}
             <h2>{item.title}</h2>
             {item.description && <p className="detail-description">{item.description}</p>}
             <dl>
