@@ -690,7 +690,9 @@ button.github-button:hover {
   button.github-button {
     flex: 1;
     justify-content: center;
-    padding: 12px 14px;
+    padding: 12px 10px;
+    white-space: nowrap;
+    font-size: 15px;
   }
 
   .account {
